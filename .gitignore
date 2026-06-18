@@ -1,0 +1,69 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Environment variables and local secrets
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Build output
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Vite / frontend cache
+.vite/
+client/dist/
+client/.vite/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime/generated files
+uploads/
+tmp/
+temp/
+ppt_temp/
+*.tmp
+*.cache
+
+# Local databases and dumps
+*.sqlite
+*.sqlite3
+*.db
+dump/
+backups/
+
+# Docker/local overrides
+docker-compose.override.yml
+.docker/
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor and IDE files
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.example.json
+.idea/
+*.swp
+*.swo
+
+# Test and tooling cache
+.eslintcache
+.cache/
+.nyc_output/
+
+# Optional generated presentation artifacts
+*.pptx.tmp
+~$*.pptx
