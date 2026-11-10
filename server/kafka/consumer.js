@@ -3,13 +3,19 @@ import dotenv from 'dotenv';
 import connectDB from '../config/db.js';
 import ProcessedEvent from '../models/ProcessedEvent.js';
 import Analytics from '../models/Analytics.js';
+import { ensureKafkaTopics } from './admin.js';
+import { retryKafkaOperation } from './retry.js';
 import { TOPICS } from './topics.js';
 
 dotenv.config();
 
 const kafka = new Kafka({
   clientId: 'automark-consumer',
-  brokers: ['localhost:9092'],
+  brokers: [process.env.KAFKA_BROKER || 'localhost:9092'],
+  retry: {
+    retries: 20,
+    initialRetryTime: 3000,
+  },
 });
 
 const groupId = process.argv[2] || 'content-events-group';
@@ -19,8 +25,9 @@ const dlqProducer = kafka.producer();
 
 const run = async () => {
   await connectDB();
-  await consumer.connect();
-  await dlqProducer.connect();
+  await ensureKafkaTopics();
+  await retryKafkaOperation(() => consumer.connect(), 'Kafka analytics consumer connection');
+  await retryKafkaOperation(() => dlqProducer.connect(), 'Kafka analytics DLQ producer connection');
   console.log(`Kafka consumer connected with groupId: ${groupId}`);
 
   await consumer.subscribe({

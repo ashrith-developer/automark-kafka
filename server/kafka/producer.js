@@ -1,15 +1,25 @@
 import { Kafka } from 'kafkajs';
+import dotenv from 'dotenv';
+import { ensureKafkaTopics } from './admin.js';
+import { retryKafkaOperation } from './retry.js';
 import { TOPICS } from './topics.js';
+
+dotenv.config();
 
 const kafka = new Kafka({
   clientId: 'automark-api',
-  brokers: ['localhost:9092'],
+  brokers: [process.env.KAFKA_BROKER || 'localhost:9092'],
+  retry: {
+    retries: 20,
+    initialRetryTime: 3000,
+  },
 });
 
 export const producer = kafka.producer();
 
 export const connectProducer = async () => {
-  await producer.connect();
+  await ensureKafkaTopics();
+  await retryKafkaOperation(() => producer.connect(), 'Kafka producer connection');
   console.log('Kafka producer connected');
 };
 

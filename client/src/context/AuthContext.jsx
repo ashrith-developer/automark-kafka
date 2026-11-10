@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
 import api from '../services/api';
 
 export const AuthContext = createContext();
@@ -39,13 +39,19 @@ export const AuthProvider = ({ children }) => {
     setUser(res.data);
   };
 
+  const loginWithGoogle = async (credential) => {
+    const res = await api.post('/auth/google', { credential });
+    localStorage.setItem('token', res.data.token);
+    setUser(res.data);
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, register, loginWithGoogle, logout, loading }}>
       {!loading && children}
     </AuthContext.Provider>
   );

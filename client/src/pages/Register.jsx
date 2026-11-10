@@ -1,7 +1,8 @@
-import React, { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { Mail, Lock, AlertCircle, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Lock, AlertCircle, ArrowRight, CheckCircle2 } from 'lucide-react';
+import GoogleSignInButton from '../components/GoogleSignInButton';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -10,7 +11,7 @@ const Register = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
-  const { register, user } = useContext(AuthContext);
+  const { register, loginWithGoogle, user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,6 +39,16 @@ const Register = () => {
       setIsLoading(false);
     }
   };
+
+  const handleGoogleSuccess = useCallback(async (credential) => {
+    setError('');
+    await loginWithGoogle(credential);
+    navigate('/dashboard');
+  }, [loginWithGoogle, navigate]);
+
+  const handleGoogleError = useCallback((err) => {
+    setError(err.response?.data?.message || 'Google sign-in failed');
+  }, []);
 
   return (
     <div className="min-h-screen bg-dark-bg text-white flex flex-col md:flex-row p-4 md:p-8 gap-8 font-sans">
@@ -114,6 +125,19 @@ const Register = () => {
               <p className="text-sm text-red-200">{error}</p>
             </div>
           )}
+
+          <div className="mb-6 space-y-5">
+            <GoogleSignInButton
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              text="signup_with"
+            />
+            <div className="flex items-center gap-3">
+              <div className="h-px flex-1 bg-dark-border"></div>
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">or</span>
+              <div className="h-px flex-1 bg-dark-border"></div>
+            </div>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>

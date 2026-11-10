@@ -42,6 +42,13 @@ MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 GROQ_API_KEY=your_groq_api_key
 GEMINI_API_KEY=your_gemini_api_key
+GOOGLE_CLIENT_ID=your_google_oauth_client_id.apps.googleusercontent.com
+```
+
+Create `client/.env`:
+
+```env
+VITE_GOOGLE_CLIENT_ID=your_google_oauth_client_id.apps.googleusercontent.com
 ```
 
 The frontend currently calls the API at:
@@ -104,6 +111,7 @@ Auth routes:
 
 - `POST /api/auth/register`
 - `POST /api/auth/login`
+- `POST /api/auth/google`
 - `GET /api/auth/me`
 - `PUT /api/auth/change-password`
 - `POST /api/auth/logout`
@@ -116,6 +124,16 @@ Content routes:
 - `DELETE /api/content/:id`
 
 Protected routes require a valid JWT token.
+
+## Google OAuth Setup
+
+1. Create an OAuth client in Google Cloud Console.
+2. Choose Web application as the client type.
+3. Add the frontend URL to Authorized JavaScript origins, for example `http://localhost:5173`.
+4. Copy the client ID into both `server/.env` and `client/.env`.
+5. Restart the backend and frontend dev servers after changing env files.
+
+The backend verifies the Google credential, creates or finds the user, and returns the same JWT format used by normal email/password login.
 
 ## Useful Scripts
 

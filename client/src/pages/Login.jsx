@@ -1,7 +1,8 @@
-import React, { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { Mail, Lock, AlertCircle, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
+import { Lock, AlertCircle, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
+import GoogleSignInButton from '../components/GoogleSignInButton';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -11,7 +12,7 @@ const Login = () => {
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [resetSent, setResetSent] = useState(false);
   
-  const { login, user } = useContext(AuthContext);
+  const { login, loginWithGoogle, user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,6 +44,16 @@ const Login = () => {
       setIsLoading(false);
     }
   };
+
+  const handleGoogleSuccess = useCallback(async (credential) => {
+    setError('');
+    await loginWithGoogle(credential);
+    navigate('/dashboard');
+  }, [loginWithGoogle, navigate]);
+
+  const handleGoogleError = useCallback((err) => {
+    setError(err.response?.data?.message || 'Google sign-in failed');
+  }, []);
 
   return (
     <div className="min-h-screen bg-dark-bg text-white flex flex-col md:flex-row p-4 md:p-8 gap-8 font-sans">
@@ -114,6 +125,20 @@ const Login = () => {
             <div className="bg-green-500/10 border border-green-500/50 p-4 rounded-xl flex items-start mb-6">
               <ShieldCheck className="h-5 w-5 text-green-400 mr-3 mt-0.5" />
               <p className="text-sm text-green-200">If an account exists for {email}, recovery instructions have been sent.</p>
+            </div>
+          )}
+
+          {!resetSent && !isForgotPassword && (
+            <div className="mb-6 space-y-5">
+              <GoogleSignInButton
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleError}
+              />
+              <div className="flex items-center gap-3">
+                <div className="h-px flex-1 bg-dark-border"></div>
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-500">or</span>
+                <div className="h-px flex-1 bg-dark-border"></div>
+              </div>
             </div>
           )}
 
