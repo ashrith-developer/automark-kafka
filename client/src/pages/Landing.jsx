@@ -72,7 +72,7 @@ const Landing = () => {
         <div className="mt-32 mb-10 bg-gradient-to-br from-primary-900/40 to-dark-surface border border-primary-500/30 rounded-3xl p-12 text-center relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-accent-500/10 blur-3xl rounded-full"></div>
           <h2 className="text-3xl font-bold text-white mb-4 relative z-10">Ready to put your marketing on autopilot?</h2>
-          <p className="text-slate-300 mb-8 max-w-xl mx-auto relative z-10">Join thousands of creators and marketers who use AutoMark to scale their brand presence daily.</p>
+          <p className="text-slate-300 mb-8 max-w-xl mx-auto relative z-10">Create platform-ready copy for your next campaign, tailored to your product and audience.</p>
           
           <Link to="/register" className="inline-flex bg-white hover:bg-slate-200 text-slate-900 px-8 py-4 rounded-xl text-sm font-bold tracking-wide transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] relative z-10">
             Create Your Free Account
